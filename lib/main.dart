@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '/widgets/TaskDialogue.dart';
-import 'models/Task.dart';
+import 'widgets/task_dialog.dart';
+import 'models/task.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,8 +40,9 @@ class _TaskListState extends State<TaskList> {
         child: Icon(Icons.add_task),
         onPressed: () {
           TaskDialogue dialogue = TaskDialogue(
-              Task(0, "", "", TimeOfDay(hour: 12, minute: 0),
-                  List.empty(growable: true)),
+              Task(id: 0, name: "", desc: "",
+                  time: TimeOfDay(hour: 12, minute: 0),
+                  days: List.empty(growable: true)),
               true);
           showDialog(
             context: context,
@@ -50,44 +51,7 @@ class _TaskListState extends State<TaskList> {
         },
       ),
       body: Column(
-        children:[
-          const Text("Monday"),
-          ListView(
-            children: [
-            ]
-          ),
-          const Text("Tuesday"),
-          ListView(
-              children: [
-              ]
-          ),
-          const Text("Wednesday"),
-          ListView(
-              children: [
-              ]
-          ),
-          const Text("Thursday"),
-          ListView(
-              children: [
-              ]
-          ),
-          const Text("Friday"),
-          ListView(
-              children: [
-              ]
-          ),
-          const Text("Saturday"),
-          ListView(
-              children: [
-              ]
-          ),
-          const Text("Sunday"),
-          ListView(
-              children: [
-              ]
-          ),
-        ],
-      ),
+      )
     );
   }
 }
