@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import '../models/task.dart';
 import 'task_form.dart';
 
-class TaskDialogue {
+class TaskDialog {
   // these will be passed into the form
   late final bool _isNew;
   late final Task _task;
 
-  TaskDialogue(this._task, this._isNew);
+  TaskDialog(this._task, this._isNew);
 
   Widget buildDialog(BuildContext context) {
 

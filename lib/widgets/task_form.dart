@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
 import '../models/day_of_week.dart';
-import '../util/db_helper.dart';
+import '../util/task_db.dart';
 
 class TaskForm extends StatefulWidget {
   final Task task;
@@ -15,7 +15,10 @@ class TaskForm extends StatefulWidget {
 
 class _TaskFormState extends State<TaskForm> {
   // form key for validation.
-  final _formKey = GlobalKey<FormState>();
+  late final _formKey = GlobalKey<FormState>();
+
+  // database helper
+  late final TaskDb db;
 
   // txt controllers for inputting values
   final _txtName = TextEditingController();
@@ -32,18 +35,16 @@ class _TaskFormState extends State<TaskForm> {
     for (var day in DayOfWeek.values) day: false,
   };
 
-  // get the task passed into the widget
+  // get the task passed into the widget,
   @override
   void initState() {
     super.initState();
     _task = widget.task;
+    db = TaskDb();
   }
 
   @override
   Widget build(BuildContext context) {
-    // get the singleton instance of the database helper
-    DbHelper helper = DbHelper();
-
     // return a form
     return Form(
       key: _formKey,
@@ -127,14 +128,12 @@ class _TaskFormState extends State<TaskForm> {
                     the database. Inform user via snackbar.
                   */
                   if (_formKey.currentState!.validate()) {
-                    final savedDays = DayOfWeek.values
-                    .where((day) => _selectedDays[day] == true).toList();
-
                     _task.name = _txtName.text;
                     _task.desc = _txtDesc.text;
                     _task.time = _timeOfDay;
-                    _task.days = savedDays;
-                    helper.insertTask(_task);
+                    _task.days = DayOfWeek.values
+                        .where((day) => _selectedDays[day] == true).toList();
+                    db.insertTask(_task);
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("Saving task ${_task.name}"),
@@ -154,7 +153,7 @@ class _TaskFormState extends State<TaskForm> {
 
   Future<void> _selectTimeOfDay(BuildContext context) async {
     // waits for the showTimePicker to return
-    TimeOfDay? pickedTime = await showTimePicker(
+    final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
@@ -174,9 +173,9 @@ class _TaskFormState extends State<TaskForm> {
   @override
   void dispose() {
     // release memory of the controllers
-    super.dispose();
     _txtName.dispose();
     _txtDesc.dispose();
     _txtTime.dispose();
+    super.dispose();
   }
 }
